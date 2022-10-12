@@ -4,6 +4,8 @@ import android.media.SoundPool
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.system.Os.bind
+import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
 
@@ -13,6 +15,12 @@ class MainActivity : AppCompatActivity() {
     private val remainMinutesTextView: TextView by lazy {
         findViewById(R.id.remainMinutesTextView)
     }
+    private var countState = false
+    private var isFirst = true
+    private var remainTime = 0L
+    private val button: Button by lazy{
+        findViewById(R.id.btn)
+    }
 
     private val remainSecondsTextView: TextView by lazy {
         findViewById(R.id.remainSecondsTextView)
@@ -21,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     private val seekBar: SeekBar by lazy {
         findViewById(R.id.seekBar)
     }
-
     private val soundPool = SoundPool.Builder().build()
 
     private var currentCountDownTimer: CountDownTimer? = null
@@ -57,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     if(fromUser){
-                        updateRemainTimes(progress * 60 * 1000L)
+                        updateRemainTimes(progress * 60 * 1000L)    //분단위 지정
                     }
                 }
 
@@ -76,6 +83,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+
+        button.setOnClickListener {
+            if (countState || seekBar.progress == 0) stopCountDown()
+            else startCountDown()
+        }
     }
 
     private fun initSounds(){
@@ -87,6 +99,7 @@ class MainActivity : AppCompatActivity() {
         object : CountDownTimer(initialMillis, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
                 updateRemainTimes(millisUntilFinished)
+                println(remainTime)
                 updateSeekBar(millisUntilFinished)
             }
 
@@ -95,18 +108,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
     private fun startCountDown(){
-        currentCountDownTimer = createCountDownTimer(seekBar.progress * 60 * 1000L)
+        currentCountDownTimer = if(isFirst) createCountDownTimer(seekBar.progress * 60 * 1000L)
+        else createCountDownTimer(remainTime * 1000)
+
         currentCountDownTimer?.start()
 
         tickingSoundId?.let {soundId ->
             soundPool.play(soundId,1F, 1F, 0, -1, 1F)
         }
+        countState = true
+        button.text = "STOP"
+        isFirst = false
     }
 
     private fun stopCountDown(){
         currentCountDownTimer?.cancel()
         currentCountDownTimer = null
         soundPool.autoPause()
+        countState = false
+        button.text = "START"
     }
 
     private fun completeCountDown(){
@@ -122,6 +142,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateRemainTimes(remainMillis: Long){
         val remainSeconds = remainMillis / 1000
+        remainTime = remainSeconds
 
         remainMinutesTextView.text = "%02d'".format(remainSeconds / 60)
         remainSecondsTextView.text = "%02d".format(remainSeconds % 60)
