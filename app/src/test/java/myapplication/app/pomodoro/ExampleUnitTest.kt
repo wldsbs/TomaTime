@@ -1,4 +1,4 @@
-package fastcampus.app.pomodoro
+package myapplication.app.pomodoro
 
 import org.junit.Test
 

@@ -1,10 +1,9 @@
-package fastcampus.app.pomodoro
+package myapplication.app.pomodoro
 
 import android.media.SoundPool
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.system.Os.bind
 import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
@@ -99,7 +98,6 @@ class MainActivity : AppCompatActivity() {
         object : CountDownTimer(initialMillis, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
                 updateRemainTimes(millisUntilFinished)
-                println(remainTime)
                 updateSeekBar(millisUntilFinished)
             }
 
