@@ -6,25 +6,19 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.Button
 import android.widget.SeekBar
-import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import myapplication.app.pomodoro.databinding.ActivityMainBinding
+import myapplication.app.pomodoro.vm.CountViewModel
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+    private var viewModel: CountViewModel = CountViewModel()
 
-    //나중에 remainMinutesTextView에 접근을 했을때 findViewById 실행해서 가져옴
-    private val remainMinutesTextView: TextView by lazy {
-        findViewById(R.id.remainMinutesTextView)
-    }
     private var countState = false
     private var isFirst = true
-    private var remainTime = 0L
     private val button: Button by lazy{
         findViewById(R.id.btn)
     }
-
-    private val remainSecondsTextView: TextView by lazy {
-        findViewById(R.id.remainSecondsTextView)
-    }
-
     private val seekBar: SeekBar by lazy {
         findViewById(R.id.seekBar)
     }
@@ -36,7 +30,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.vm = viewModel
+        binding.apply {
+            lifecycleOwner = this@MainActivity
+        }
 
         bindViews()
         initSounds()
@@ -63,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     if(fromUser){
-                        updateRemainTimes(progress * 60 * 1000L)    //분단위 지정
+                        viewModel.updateRemainTimes(progress * 60 * 1000L)    //분단위 지정
                     }
                 }
 
@@ -97,7 +95,7 @@ class MainActivity : AppCompatActivity() {
     private fun createCountDownTimer(initialMillis: Long) =
         object : CountDownTimer(initialMillis, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
-                updateRemainTimes(millisUntilFinished)
+                viewModel.updateRemainTimes(millisUntilFinished)
                 updateSeekBar(millisUntilFinished)
             }
 
@@ -107,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
     private fun startCountDown(){
         currentCountDownTimer = if(isFirst) createCountDownTimer(seekBar.progress * 60 * 1000L)
-        else createCountDownTimer(remainTime * 1000)
+        else createCountDownTimer(viewModel.remainTime.value!!)
 
         currentCountDownTimer?.start()
 
@@ -128,7 +126,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun completeCountDown(){
-        updateRemainTimes(0)
+        viewModel.updateRemainTimes(0)
         updateSeekBar(0)
 
         soundPool.autoPause()
@@ -136,14 +134,6 @@ class MainActivity : AppCompatActivity() {
             soundPool.play(soundId, 1F, 1F, 0, -1, 1F)
 
         }
-    }
-
-    private fun updateRemainTimes(remainMillis: Long){
-        val remainSeconds = remainMillis / 1000
-        remainTime = remainSeconds
-
-        remainMinutesTextView.text = "%02d'".format(remainSeconds / 60)
-        remainSecondsTextView.text = "%02d".format(remainSeconds % 60)
     }
 
     private fun updateSeekBar(remainMillis: Long){
