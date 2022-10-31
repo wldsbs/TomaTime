@@ -5,7 +5,7 @@
     <data>
         <variable
             name="vm"
-            type="myapplication.app.pomodoro.vm.CountViewModel" />
+            type="myapplication.app.pomodoro.vm.TimerViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -76,7 +76,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#00ff0000"
-            android:text="STOP"
+            android:text="@{vm.btnText}"
+            android:onClick="@{()-> vm.stopOrStart()}"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
