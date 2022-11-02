@@ -11,9 +11,10 @@ class TimerViewModel {
     private var _remainMinutes = MutableLiveData<Long>()
     private var _remainSeconds = MutableLiveData<Long>()
 
-    private var _isMuteMode = MutableLiveData<Boolean>()
+//    var imgResource = MutableLiveData<Int>()
+    var isMuteMode = MutableLiveData<Boolean>()
     private var _isFirst = MutableLiveData<Boolean>()
-    private var _countState = MutableLiveData<Boolean>()
+    var countState = MutableLiveData<Boolean>()
     var progress = MutableLiveData<Int>()
     var btnText = MutableLiveData<String>()
 
@@ -32,11 +33,12 @@ class TimerViewModel {
     init {
         _remainMinutes.value = 0L
         _remainSeconds.value = 0L
-        _isMuteMode.value = false
+        isMuteMode.value = false
         _isFirst.value = true
-        _countState.value = false
+        countState.value = false
         progress.value = 0
         btnText.value = "Start"
+//        imgResource.value = R.drawable.ic_baseline_volume_up_24
     }
 
     private fun createCountDownTimer(initialMillis: Long) =
@@ -99,9 +101,21 @@ class TimerViewModel {
         }
     }
     fun stopOrStart() {
-        if (_countState.value!! || progress.value == 0) stopCountDown()
+        if (countState.value!! || progress.value == 0) stopCountDown()
         else startCountDown()
     }
+//    fun controlSoundMode(){
+//        isMuteMode.value = !isMuteMode.value!!
+//
+//        if(isMuteMode.value!!) {
+//            imgResource.value = R.drawable.ic_baseline_volume_off_24
+//            soundPool.autoPause()
+//        }
+//        else if(_countState.value!!) {
+//            imgResource.value = R.drawable.ic_baseline_volume_up_24
+//            soundPool.autoResume()
+//        }
+//    }
 
     private fun startCountDown(){
         currentCountDownTimer = if(_isFirst.value!!) createCountDownTimer(progress.value!! * 60 * 1000L)
@@ -110,9 +124,9 @@ class TimerViewModel {
         currentCountDownTimer?.start()
 
         tickingSoundId?.let {soundId ->
-            soundPool.play(soundId,1F, 1F, 0, -1, 1F)
+            if(!isMuteMode.value!!) soundPool.play(soundId,1F, 1F, 0, -1, 1F)
         }
-        _countState.value = true
+        countState.value = true
         btnText.value = "STOP"
         _isFirst.value = false
     }
@@ -121,7 +135,7 @@ class TimerViewModel {
         currentCountDownTimer?.cancel()
         currentCountDownTimer = null
         soundPool.autoPause()
-        _countState.value = false
+        countState.value = false
         btnText.value = "START"
     }
 }
