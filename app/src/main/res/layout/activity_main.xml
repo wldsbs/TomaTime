@@ -23,9 +23,11 @@
 
         <TextView
             android:id="@+id/remainMinutesTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="175dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/suitregular"
             android:text="@{@string/remainMin(vm.remainMin)}"
+            android:textAlignment="textEnd"
             android:textColor="@color/white"
             android:textSize="120sp"
             android:textStyle="bold"
@@ -37,9 +39,11 @@
 
         <TextView
             android:id="@+id/remainSecondsTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="86dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/suitregular"
             android:text="@{@string/remainSec(vm.remainSec)}"
+            android:textAlignment="textStart"
             android:textColor="@color/white"
             android:textSize="70sp"
             android:textStyle="bold"
@@ -76,9 +80,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#00ff0000"
-            android:text="@{vm.btnText}"
+            android:fontFamily="@font/suitregular"
             android:onClick="@{()-> vm.stopOrStart()}"
+            android:text="@{vm.btnText}"
             android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
