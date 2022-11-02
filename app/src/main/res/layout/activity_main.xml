@@ -58,6 +58,7 @@
             android:layout_marginHorizontal="20dp"
             android:max="60"
             android:progressDrawable="@color/transparent"
+            android:splitTrack="false"
             android:thumb="@drawable/ic_thumb"
             android:tickMark="@drawable/drawable_tick_mark"
             app:layout_constraintBottom_toTopOf="@id/btn"
