@@ -1,7 +1,8 @@
 package myapplication.app.pomodoro
 
+import android.content.Context
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import myapplication.app.pomodoro.databinding.ActivityMainBinding
 import myapplication.app.pomodoro.vm.TimerViewModel
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
             controlSoundMode()
         }
         initSounds()
+        initVibrator()
     }
 
     private fun controlSoundMode(){
@@ -36,6 +38,15 @@ class MainActivity : AppCompatActivity() {
         }
         else if(viewModel.countState.value!! && viewModel.isMuteMode.value == false) {
             viewModel.soundPool.autoResume()
+        }
+    }
+    private fun initVibrator(){
+        // 진동 객체 얻기
+        viewModel.vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager = this.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator;
+        } else {
+            getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
     }
 

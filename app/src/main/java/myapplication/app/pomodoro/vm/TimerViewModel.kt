@@ -1,12 +1,13 @@
 package myapplication.app.pomodoro.vm
 
 import android.media.SoundPool
-import android.os.CountDownTimer
+import android.os.*
 import android.widget.SeekBar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 class TimerViewModel {
+    var vibrator: Vibrator? = null
     private var _remainTime = MutableLiveData<Long>()
     private var remainMinutes = MutableLiveData<Long>()
     private var _remainSeconds = MutableLiveData<Long>()
@@ -97,7 +98,11 @@ class TimerViewModel {
             }
         }
         else{
-            //무음모드일때 타이머 완료 알림(진동?)
+            //무음모드일때 타이머 완료 알림
+            if(Build.VERSION.SDK_INT >= 26){
+                //진동시간, 세기 설정
+                vibrator!!.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+            }else{ vibrator!!.vibrate(500) }
         }
     }
     fun stopOrStart() {
