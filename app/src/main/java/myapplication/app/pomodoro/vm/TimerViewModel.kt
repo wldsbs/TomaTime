@@ -1,14 +1,15 @@
 package myapplication.app.pomodoro.vm
 
 import android.media.SoundPool
-import android.os.CountDownTimer
+import android.os.*
 import android.widget.SeekBar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 class TimerViewModel {
+    var vibrator: Vibrator? = null
     private var _remainTime = MutableLiveData<Long>()
-    private var _remainMinutes = MutableLiveData<Long>()
+    private var remainMinutes = MutableLiveData<Long>()
     private var _remainSeconds = MutableLiveData<Long>()
 
 //    var imgResource = MutableLiveData<Int>()
@@ -27,11 +28,10 @@ class TimerViewModel {
 
     //엔티티는 서버에서 받아온 정보
     //model 사용자에게 보여지는 정보(가공완료)
-    val remainMin: LiveData<Long> get() = _remainMinutes
     val remainSec: LiveData<Long> get() = _remainSeconds
 
     init {
-        _remainMinutes.value = 0L
+        remainMinutes.value = 0L
         _remainSeconds.value = 0L
         isMuteMode.value = false
         _isFirst.value = true
@@ -53,29 +53,26 @@ class TimerViewModel {
             }
         }
 
-    fun createSeekBar() =
-        object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, prog: Int, fromUser: Boolean) {
-                if(fromUser){
-                    progress.value = prog
-                    updateRemainTimes(prog * 60 * 1000L)    //분단위 지정
-                }
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                progress.value = seekBar!!.progress
-                stopCountDown()
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                seekBar ?: return
-
-                progress.value = seekBar.progress
-                if(seekBar.progress == 0){
-                    stopCountDown()
-                }
-            }
+    fun onProgressChanged(seekBar: SeekBar?, prog: Int, fromUser: Boolean) {
+        if(fromUser){
+            progress.value = prog
+            updateRemainTimes(prog * 60 * 1000L)    //분단위 지정
         }
+    }
+
+    fun onStartTrackingTouch(seekBar: SeekBar?) {
+        progress.value = seekBar!!.progress
+        stopCountDown()
+    }
+
+    fun onStopTrackingTouch(seekBar: SeekBar?) {
+        seekBar ?: return
+
+        progress.value = seekBar.progress
+        if(seekBar.progress == 0){
+            stopCountDown()
+        }
+    }
 
     private fun updateSeekBar(remainMillis: Long){
         progress.value = (remainMillis / 1000 / 60).toInt()
@@ -85,7 +82,7 @@ class TimerViewModel {
         val remainSeconds = remainMillis / 1000
         _remainTime.value = remainMillis
 
-        _remainMinutes.value = remainSeconds / 60
+        remainMinutes.value = remainSeconds / 60
         _remainSeconds.value = remainSeconds % 60
 //        Log.d("min' sec", "${remainMin.value.toString()}' ${remainSec.value.toString()}")
     }
@@ -95,9 +92,17 @@ class TimerViewModel {
         updateSeekBar(0)
 
         soundPool.autoPause()
-        bellSoundId?.let{ soundId ->
-            soundPool.play(soundId, 1F, 1F, 0, -1, 1F)
-
+        if(isMuteMode.value == false){
+            bellSoundId?.let{ soundId ->
+                soundPool.play(soundId, 1F, 1F, 0, -1, 1F)
+            }
+        }
+        else{
+            //무음모드일때 타이머 완료 알림
+            if(Build.VERSION.SDK_INT >= 26){
+                //진동시간, 세기 설정
+                vibrator!!.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+            }else{ vibrator!!.vibrate(500) }
         }
     }
     fun stopOrStart() {
@@ -131,7 +136,7 @@ class TimerViewModel {
         _isFirst.value = false
     }
 
-    fun stopCountDown(){
+    private fun stopCountDown(){
         currentCountDownTimer?.cancel()
         currentCountDownTimer = null
         soundPool.autoPause()

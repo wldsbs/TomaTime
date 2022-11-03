@@ -1,15 +1,14 @@
 package myapplication.app.pomodoro
 
+import android.content.Context
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.util.Log
 import androidx.databinding.DataBindingUtil
 import myapplication.app.pomodoro.databinding.ActivityMainBinding
 import myapplication.app.pomodoro.vm.TimerViewModel
 
 class MainActivity : AppCompatActivity() {
     //todo 무음모드일때 카운트다운 끝나면 어떻게 알려주지,,,?
-    //todo 무음모드 dataBinding 리팩토링하기
     private lateinit var binding: ActivityMainBinding
     private var viewModel: TimerViewModel = TimerViewModel()
 
@@ -21,13 +20,11 @@ class MainActivity : AppCompatActivity() {
             lifecycleOwner = this@MainActivity
         }
 
-        binding.seekBar.setOnSeekBarChangeListener(
-            viewModel.createSeekBar()
-        )
         binding.volumeBtn.setOnClickListener{
             controlSoundMode()
         }
         initSounds()
+        initVibrator()
     }
 
     private fun controlSoundMode(){
@@ -37,12 +34,19 @@ class MainActivity : AppCompatActivity() {
         else binding.volumeBtn.setImageResource(R.drawable.ic_baseline_volume_up_24)
 
         if(viewModel.isMuteMode.value!!) {
-//            imgResource.value = R.drawable.ic_baseline_volume_off_24
             viewModel.soundPool.autoPause()
         }
         else if(viewModel.countState.value!! && viewModel.isMuteMode.value == false) {
-//            imgResource.value = R.drawable.ic_baseline_volume_up_24
             viewModel.soundPool.autoResume()
+        }
+    }
+    private fun initVibrator(){
+        // 진동 객체 얻기
+        viewModel.vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager = this.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator;
+        } else {
+            getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
     }
 

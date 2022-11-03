@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="myapplication.app.pomodoro">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_main"
@@ -9,7 +11,8 @@
         android:roundIcon="@mipmap/ic_main_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pomodoro">
-        <activity android:name="myapplication.app.pomodoro.MainActivity"
+        <activity
+            android:name="myapplication.app.pomodoro.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
