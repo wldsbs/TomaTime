@@ -1,6 +1,7 @@
 package myapplication.app.pomodoro
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -12,8 +13,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var viewModel: TimerViewModel = TimerViewModel()
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putLong("min", viewModel.remainMinutes.value!!)
+        outState.putLong("sec", viewModel.remainSeconds.value!!)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(savedInstanceState != null){
+            viewModel.remainMinutes.value = savedInstanceState.getLong("min")
+            viewModel.remainSeconds.value = savedInstanceState.getLong("sec")
+        }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.vm = viewModel
         binding.apply {
