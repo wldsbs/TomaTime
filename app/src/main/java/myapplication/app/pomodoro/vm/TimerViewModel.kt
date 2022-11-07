@@ -2,16 +2,14 @@ package myapplication.app.pomodoro.vm
 
 import android.media.SoundPool
 import android.os.*
-import android.view.View
 import android.widget.SeekBar
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 class TimerViewModel {
     var vibrator: Vibrator? = null
     private var _remainTime = MutableLiveData<Long>()
-    private var remainMinutes = MutableLiveData<Long>()
-    private var _remainSeconds = MutableLiveData<Long>()
+    var remainMinutes = MutableLiveData<Long>()
+    var remainSeconds = MutableLiveData<Long>()
 
 //    var imgResource = MutableLiveData<Int>()
     var isMuteMode = MutableLiveData<Boolean>()
@@ -29,11 +27,10 @@ class TimerViewModel {
 
     //엔티티는 서버에서 받아온 정보
     //model 사용자에게 보여지는 정보(가공완료)
-    val remainSec: LiveData<Long> get() = _remainSeconds
 
     init {
         remainMinutes.value = 0L
-        _remainSeconds.value = 0L
+        remainSeconds.value = 0L
         isMuteMode.value = false
         _isFirst.value = true
         countState.value = false
@@ -84,7 +81,7 @@ class TimerViewModel {
         _remainTime.value = remainMillis
 
         remainMinutes.value = remainSeconds / 60
-        _remainSeconds.value = remainSeconds % 60
+        this.remainSeconds.value = remainSeconds % 60
 //        Log.d("min' sec", "${remainMin.value.toString()}' ${remainSec.value.toString()}")
     }
 

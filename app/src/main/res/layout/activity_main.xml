@@ -45,7 +45,7 @@
             android:layout_width="86dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/suitregular"
-            android:text="@{@string/remainSec(vm.remainSec)}"
+            android:text="@{@string/remainSec(vm.remainSeconds)}"
             android:textAlignment="textStart"
             android:textColor="@color/white"
             android:textSize="70dp"
