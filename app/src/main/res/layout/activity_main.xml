@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
+            name="activity"
+            type="myapplication.app.pomodoro.MainActivity" />
+        <variable
             name="vm"
             type="myapplication.app.pomodoro.vm.TimerViewModel" />
     </data>
