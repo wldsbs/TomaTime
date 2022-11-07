@@ -2,6 +2,7 @@ package myapplication.app.pomodoro.vm
 
 import android.media.SoundPool
 import android.os.*
+import android.view.View
 import android.widget.SeekBar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -90,6 +91,7 @@ class TimerViewModel {
     fun completeCountDown(){
         updateRemainTimes(0)
         updateSeekBar(0)
+        btnText.value = "Start"
 
         soundPool.autoPause()
         if(isMuteMode.value == false){
