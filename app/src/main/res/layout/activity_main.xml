@@ -2,27 +2,34 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="activity"
             type="myapplication.app.pomodoro.MainActivity" />
+
         <variable
             name="vm"
             type="myapplication.app.pomodoro.vm.TimerViewModel" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:id="@+id/tomatoView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/img_tomato_stem"
-            app:layout_constraintBottom_toTopOf="@id/remainMinutesTextView"
+            android:layout_marginBottom="80dp"
+            android:src="@drawable/myrealtomato"
+            app:layout_constraintBottom_toBottomOf="@id/btn"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
             android:id="@+id/remainMinutesTextView"
@@ -34,11 +41,12 @@
             android:textColor="@color/white"
             android:textSize="120dp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tomatoView"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/remainSecondsTextView"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/tomatoView"
+            tools:text="00'" />
 
         <TextView
             android:id="@+id/remainSecondsTextView"
@@ -52,7 +60,8 @@
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@id/remainMinutesTextView"
             app:layout_constraintLeft_toRightOf="@id/remainMinutesTextView"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="00" />
 
         <SeekBar
             android:id="@+id/seekBar"
@@ -71,7 +80,7 @@
             app:layout_constraintBottom_toTopOf="@id/btn"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/remainMinutesTextView" />
+            app:layout_constraintTop_toBottomOf="@id/tomatoView" />
 
         <ImageView
             android:id="@+id/volumeBtn"
@@ -91,10 +100,12 @@
             android:fontFamily="@font/suitregular"
             android:onClick="@{()-> vm.stopOrStart()}"
             android:text="@{vm.btnText}"
+            android:textColor="@color/myGray"
             android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/seekBar" />
 

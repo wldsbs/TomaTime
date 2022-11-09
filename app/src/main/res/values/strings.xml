@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">pomodoro</string>
+    <string name="app_name">토마타임</string>
     <string name="remainMin">%02d\'</string>
     <string name="remainSec">%02d</string>
 </resources>

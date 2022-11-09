@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="pomodoro_red">#ffd32f2f</color>
     <color name="transparent">#00000000</color>
+    <color name="myGray">#404040</color>
 
 </resources>
